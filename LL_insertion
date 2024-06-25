@@ -1,30 +1,38 @@
 #include<iostream>
+#include<stdexcept>
+#include<exception>
 using namespace std;
+// Node class for showing LL INSERTION
 class Node {
 	int data;
 	Node* next;
 public:
+	// overloaded constructor
 	Node(int d)
 	{
 		this->data = d;
 		this->next = NULL;
 	}
+	// default constructor
 	Node(){
 		this->data = 0;
 		this->next = NULL;
 	}
+	// insert At end function
 	void InsertAtTail(Node*& tail, int d)
 	{
 		Node* temp = new Node(d);
 		tail->next = temp;
 		tail = temp;
 	}
+	// insert at start function
 	void InsertAtHead(Node*& head, int d)
 	{
 		Node* temp = new Node(d);
 		temp->next = head;
 		head = temp;
 	}
+	// insert at some particular position
 	void InsertAtPosition(Node*& head,Node*& tail, int pos, int d)
 	{
 		if (pos == 1)
@@ -48,15 +56,64 @@ public:
 		temp->next = nodeToInsert;
 		
 	}
+	// insert before some particular record
+	void InsertBefore(Node*& head, int ref, int d) {
+		if (head->data == ref)
+		{
+			InsertAtHead(head, d);
+			return;
+		}
+		Node* temp = head;
+		Node* prev = NULL;
+		while (temp->data != ref)
+		{
+			prev = temp;
+			temp = temp->next;
+			if (temp == NULL) {
+				throw runtime_error("No record found in the list");
+				cout << "----------------------------------- :> " << endl;
+				return;
+			}
+		}
+	
+		Node* NodeToInsert = new Node(d);
+		NodeToInsert->next = prev->next;
+		prev->next = NodeToInsert;
+	}
+	// insert after some particular record
+	void InsertAfter(Node*&head,Node*&tail,int ref,int d)
+	{
+		if (tail->data == ref)
+		{
+			InsertAtTail(tail, d);
+			return;
+		}
+		Node* temp = head;
+		while (temp->data != ref)
+		{
+			temp = temp->next;
+			if (temp == NULL)
+			{
+				throw runtime_error("No record found in the list");
+				cout << "----------------------------------- :> " << endl;
+				return;
+			}
+		}
+		Node* nodeToInsert = new Node(d);
+		nodeToInsert->next = temp->next;
+		temp->next = nodeToInsert;
+	}
+		// print function
 	void print(Node*& head)
 	{
+		cout << "------LIST------" << endl;
 		Node* temp = head;
 		while (temp != NULL)
 		{
 			cout << temp->data << " ";
 			temp = temp->next;
 		}
-		cout << endl;
+		cout << endl <<  "----------------------" << endl;
 	}
 };
 int main()
@@ -65,33 +122,36 @@ int main()
 	cout << "-------INSERTION------" << endl;
 	cout << "----------------------" << endl;
 	int data;
-	cout << "Enter the data to start the node with: " << endl;
+	cout << "Enter the data to start the List with: " << endl;
 	cin >> data;
 	Node* node1 = new Node(data);
 	Node* head = node1;
 	Node* tail = node1;
 	int choice;
 	do {
+		cout << "-----WELCOME AGAIN------" << endl;
 		cout << "Enter 1 for Head Insertion: " << endl;
 		cout << "Enter 2 for Tail Insertion: " << endl;
 		cout << "Enter 3 for insertion at any particular position: " << endl;
-		cout << "Enter 4 for exit: " << endl;
+		cout << "Enter 4 for inserting before some record: " << endl;
+		cout << "Enter 5 for inserting after some record: " << endl;
+		cout << "enter 6 for exit: " << endl;
+		cout << "--------------------------" << endl;
 		cin >> choice;
 		switch (choice)
 		{
 		case 1:
 		{
-			int data;
-			cout << "Enter the data to be added into node: " << endl;
+			cout << "Enter the data to be added into List: " << endl;
 			cin >> data;
 			node1->InsertAtHead(head, data);
 			node1->print(head);
 			break;
+		
 		}
 		case 2:
 		{
-			int data;
-			cout << "Enter the data to be added into node: " << endl;
+			cout << "Enter the data to be added into List: " << endl;
 			cin >> data;
 			node1->InsertAtTail(tail, data);
 			node1->print(head);
@@ -99,10 +159,10 @@ int main()
 		}
 		case 3:
 		{
-			int data, pos;
+			int  pos;
 			cout << "Enter the position on which data is to be inserted: " << endl;
 			cin >> pos;
-			cout << "Enter the data to be added into node: " << endl;
+			cout << "Enter the data to be added into List: " << endl;
 			cin >> data;
 			node1->InsertAtPosition(head, tail, pos, data);
 			node1->print(head);
@@ -110,11 +170,45 @@ int main()
 		}
 		case 4:
 		{
+			int ref;
+			cout << "Enter the record before which you want to add data: " << endl;
+			cin >> ref;
+			cout << "Enter the data to be added into List: " << endl;
+			cin >> data;
+			try {
+				node1->InsertBefore(head, ref, data);
+			}
+			catch (const runtime_error& e)
+			{
+				cout << e.what() << endl;
+			}
+			node1->print(head);
 			break;
 		}
-
+		case 5:
+		{
+			int  ref;
+			cout << "Enter the record after which you want to add data: " << endl;
+			cin >> ref;
+			cout << "Enter the data to be added into List: " << endl;
+			cin >> data;
+			try {
+				node1->InsertAfter(head,tail, ref, data);
+			}
+			catch (const runtime_error& e)
+			{
+				cout << e.what() << endl;
+			}
+			node1->print(head);
+			break;
 		}
-	} while (choice != 4);
+		case 6:
+		{
+			break;
+		}
+		}
+	} while (choice != 6);
 	
 	cout << "----------------------" << endl;
 }
+
