@@ -1,0 +1,317 @@
+#include<iostream>
+using namespace std;
+class Node {
+private:
+	int data;
+	Node* next;
+public:
+	Node() {
+		data = 0;
+		next = NULL;
+	}
+	Node(int d)
+	{
+		data = d;
+		next = NULL;
+	}
+	void AddNode(Node*& head, int d)
+	{
+		Node* temp = new Node(d);
+		if (head == NULL)
+		{
+		
+			head = temp;
+		}
+		else {
+		
+			head->next = temp;
+			head = temp;
+
+		}
+	}
+	//         -------    -----  |          ________   ___________  ________
+	//        |       |  |		 |         |                |       |
+	//		  |		  |	 |----   |		   |                |       |
+	//        |		  |  |       |         |-----           |       |----
+	//		  |       |  |       |         |                |       |
+	//         -------    -----  -------   |_______         |       |_______
+
+	void deleteFromStart(Node*& head)
+	{
+		if (head == NULL)
+		{
+			cout << "No Node present" << endl;
+		}
+		else {
+			Node* temp = head;
+			head = head->next;
+			delete temp;
+		}
+	}
+	// delete from END
+	void deleteFromEnd(Node*& head,Node*&tail)
+	{
+		if (head->next == NULL)
+		{
+			delete head;
+		}
+		else {
+			Node* bef = NULL;
+			Node* temp = head;
+			while (temp->next != NULL)
+			{
+				bef = temp;
+				temp = temp->next;
+			}
+			bef->next = NULL;
+			tail = bef;
+			delete temp;
+		
+		}
+	}
+	// delete from certain position
+	void deleteFromPosition(Node*& head, Node*& tail, int pos)
+	{
+		if (pos == 0)
+		{
+			cout << "This position does not occur " << endl;
+			return;
+		}
+		if (pos == 1)
+		{
+			deleteFromStart(head);
+			return;
+		}
+		Node* temp = head;
+		Node* before = NULL;
+		int cnt = 1;
+		while (cnt<pos)
+		{
+			before = temp;
+			temp = temp->next;
+			if (temp == NULL)
+			{
+				cout << "No record found" << endl;
+				return;
+			}
+			cnt++;
+		}
+	
+		if (temp == NULL)
+		{
+			deleteFromEnd(head, tail);
+		}
+		before->next = temp->next;
+		delete temp;
+	}
+	// delete some particular data
+	void deleteData(Node*& head, Node*& tail, int data)
+	{
+		if (head->data == data)
+		{
+			deleteFromStart(head);
+		}
+		else {
+			Node* temp = head;
+			Node* bef = NULL;
+			while (temp->next != NULL)
+			{
+				bef = temp;
+				temp = temp->next;
+				if (temp->data == data)
+				{
+					bef->next = temp->next;
+					delete temp;
+					return;
+				}
+				if (temp == NULL)
+				{
+					cout << "No record found " << endl;
+				}
+			}
+			if (temp->next == NULL)
+			{
+				deleteFromEnd(head, tail);
+			}
+		}
+	}
+	void deleteBeforeSomeData(Node*& head, Node*& tail, int data)
+	{
+		if (head == NULL)
+		{
+			cout << "List is empty" << endl;
+			return;
+		}
+		if (head->data == data)
+		{
+			cout << "No data exist before it in the list " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			Node* bef1 = NULL;
+			Node* bef2 = NULL;
+			while (temp->next !=NULL)
+			{
+				bef1 = bef2;
+				bef2 = temp;
+				temp = temp->next;
+			
+				if (temp->data == data)
+				{
+					if (bef1 == NULL)
+					{
+						Node* tmp = head;
+						head = head->next;
+						delete tmp;
+						return;
+					}
+					bef1->next = bef2->next;
+					delete bef2;
+					return;
+				}
+			}
+			
+				cout << "No record exist " << endl;
+				return;
+			
+		}
+	}
+	// delete AFTER some data 
+	void DeleteAfterSomeData(Node*& head, Node*& tail, int data)
+	{
+		if (head == NULL)
+		{
+			cout << "LIST IS EMPTY " << endl;
+			return;
+		}
+		else if (head->next == NULL)
+		{
+			cout << "NO DATA EXIST AFTER THIS " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			Node* after = head->next;
+			while (temp->next != NULL)
+			{
+				temp = after;
+				after = after->next;
+				if (temp->data == data)
+				{
+					if (after == NULL)
+					{
+						cout << "------------------" << endl;
+						cout << "No record exists " << endl;
+						cout << "------------------" << endl;
+						return;
+					}
+					temp->next = after->next;
+					delete after;
+					return;
+				}
+				if (temp == NULL)
+				{
+					cout << "No record exists " << endl;
+					return;
+				}
+	
+			}
+		
+
+		}
+	}
+	// print function
+	void print(Node*&head)
+	{
+		cout << "------LIST------" << endl;
+		Node* temp = head;
+		while (temp != NULL)
+		{
+		
+			cout << temp->data << " ";
+			temp = temp->next;
+				
+		}
+		cout << endl;
+		cout << "-------------------" << endl;
+	}
+};
+int main (){
+Node* head = NULL;
+Node* tail = NULL;
+int choice, data, pos;
+cout << "---------LINKED LIST---------" << endl;
+cout << "DELETION OPERATIONS" << endl;
+
+	do {
+		cout << "---------------------------" << endl;
+	cout << "1. Add node"<< endl;
+	cout << "2. Delete from start"<< endl;
+	cout << "3. Delete from end"<<endl;
+	cout << "4. Delete from position"<<endl;
+	cout << "5. Delete specific data"<<endl;
+	cout << "6. Delete before specific data"<<endl;
+	cout << "7. Delete after specific data"<<endl;
+	cout << "8. Print list"<<endl;
+	cout << "9. Exit"<<endl;
+	cout << "Enter your choice: "<<endl;
+	cin >> choice;
+
+	switch (choice) {
+	case 1:
+		cout << "Enter data to add: ";
+		cin >> data;
+		if (head == NULL) {
+			head = new Node(data);
+			tail = head;
+		}
+		else {
+			tail->AddNode(tail, data);
+			tail->print(head);
+		}
+		break;
+	case 2:
+		tail->deleteFromStart(head);
+		tail->print(head);
+		break;
+	case 3:
+		tail->deleteFromEnd(head, tail);
+		tail->print(head);
+		break;
+	case 4:
+		cout << "Enter the position to delete: ";
+		cin >> pos;
+		tail->deleteFromPosition(head, tail, pos);
+		tail->print(head);
+		break;
+	case 5:
+		cout << "Enter the data to delete: ";
+		cin >> data;
+		tail->deleteData(head, tail, data);
+		tail->print(head);
+		break;
+	case 6:
+		cout << "Enter the data before which to delete: ";
+		cin >> data;
+		tail->deleteBeforeSomeData(head, tail, data);
+		tail->print(head);
+		break;
+	case 7:
+		cout << "Enter the data after which to delete: ";
+		cin >> data;
+		tail->DeleteAfterSomeData(head, tail, data);
+		tail->print(head);
+		break;
+	case 8:
+		tail->print(head);
+		break;
+	case 9:
+		break;
+	default:
+		cout << "Invalid choice" << endl;
+	}
+	} while (choice != 9);
+
+return 0;
+}
