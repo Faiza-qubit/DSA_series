@@ -1,0 +1,120 @@
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* next;
+public:
+	Node(int d)
+	{
+		this->data = d;
+		this->next = NULL;
+	}
+	Node(){
+		this->data = 0;
+		this->next = NULL;
+	}
+	void InsertAtTail(Node*& tail, int d)
+	{
+		Node* temp = new Node(d);
+		tail->next = temp;
+		tail = temp;
+	}
+	void InsertAtHead(Node*& head, int d)
+	{
+		Node* temp = new Node(d);
+		temp->next = head;
+		head = temp;
+	}
+	void InsertAtPosition(Node*& head,Node*& tail, int pos, int d)
+	{
+		if (pos == 1)
+		{
+			InsertAtHead(head, d);
+		}
+		int count = 1;
+		Node* temp = head;
+		while (count < pos - 1)
+		{
+			temp = temp->next;
+		
+			count++;
+		}
+		if (temp->next == NULL)
+		{
+			InsertAtTail(tail, d);
+		}
+		Node* nodeToInsert = new Node(d);
+		nodeToInsert->next = temp->next;
+		temp->next = nodeToInsert;
+		
+	}
+	void print(Node*& head)
+	{
+		Node* temp = head;
+		while (temp != NULL)
+		{
+			cout << temp->data << " ";
+			temp = temp->next;
+		}
+		cout << endl;
+	}
+};
+int main()
+{
+	cout << "LINKED LIST OPERATIONS" << endl;
+	cout << "-------INSERTION------" << endl;
+	cout << "----------------------" << endl;
+	int data;
+	cout << "Enter the data to start the node with: " << endl;
+	cin >> data;
+	Node* node1 = new Node(data);
+	Node* head = node1;
+	Node* tail = node1;
+	int choice;
+	do {
+		cout << "Enter 1 for Head Insertion: " << endl;
+		cout << "Enter 2 for Tail Insertion: " << endl;
+		cout << "Enter 3 for insertion at any particular position: " << endl;
+		cout << "Enter 4 for exit: " << endl;
+		cin >> choice;
+		switch (choice)
+		{
+		case 1:
+		{
+			int data;
+			cout << "Enter the data to be added into node: " << endl;
+			cin >> data;
+			node1->InsertAtHead(head, data);
+			node1->print(head);
+			break;
+		}
+		case 2:
+		{
+			int data;
+			cout << "Enter the data to be added into node: " << endl;
+			cin >> data;
+			node1->InsertAtTail(tail, data);
+			node1->print(head);
+			break;
+		}
+		case 3:
+		{
+			int data, pos;
+			cout << "Enter the position on which data is to be inserted: " << endl;
+			cin >> pos;
+			cout << "Enter the data to be added into node: " << endl;
+			cin >> data;
+			node1->InsertAtPosition(head, tail, pos, data);
+			node1->print(head);
+			break;
+		}
+		case 4:
+		{
+			break;
+		}
+
+		}
+	} while (choice != 4);
+	
+	cout << "----------------------" << endl;
+}
