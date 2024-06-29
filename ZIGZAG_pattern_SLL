@@ -1,0 +1,110 @@
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* next;
+public:
+	Node()
+	{
+		data = 0;
+		next = NULL;
+	}
+	Node(int d)
+	{
+		data = d;
+		next = NULL;
+	}
+	void append(Node*& head, int d)
+	{
+		if (head == NULL)
+		{
+			head = new Node(d);
+			return;
+		}
+		else {
+			Node* temp = head;
+			while (temp->next != NULL)
+			{
+				temp = temp->next;
+			}
+			Node* newNode = new Node(d);
+			temp->next = newNode;
+			return;
+		}
+	}
+	void swap(Node*t, Node*t2)
+	{
+		Node* temp = new Node();
+		temp->data = t->data;
+		t->data = t2->data;
+		t2->data = temp->data;
+	}
+	void zigzag(Node*& head)
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST FOUND " << endl;
+			return;
+		}
+		else if (head->next == NULL)
+		{
+			return;
+		}
+		else {
+		
+			Node*temp = head;
+			int i = 0;
+				while(temp->next->next!=NULL)
+				{
+					if (i  % 2 != 0&& temp->data < temp->next->data)
+					{
+							
+							swap(temp, temp->next);
+							
+						
+					}
+					else if(i%2==0&&temp->data>temp->next->data) {
+
+							swap(temp, temp->next);
+						
+					}
+				
+					temp = temp->next;
+					i++;
+				}
+			
+		}
+	}
+	
+	void show(Node*& head)
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST FOUND " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			while (temp != NULL)
+			{
+				cout << temp->data << " ";
+				temp = temp->next;
+			}
+			cout << endl;
+		}
+	}
+};
+int main()
+{
+	Node* head = NULL;
+	Node* node1 = new Node();
+
+			node1->append(head, 11);
+			node1->append(head, 12);
+			node1->append(head, 20);
+			node1->append(head, 5);
+			node1->append(head, 10);
+	node1->show(head);
+	node1->zigzag(head);
+	node1->show(head);
+}
