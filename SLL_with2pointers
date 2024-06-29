@@ -1,0 +1,336 @@
+// implementation of SINGLE LINKED LIST using two pointers
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* next;
+	friend class SLL;
+public:
+	Node() {
+		data = 0;
+		next = NULL;
+	}
+	Node(int d)
+	{
+		data = d;
+		next = NULL;
+	}
+	// destructor
+	// { no NEED of destructor here because SLL will delete the NODES themselves } 
+};
+class SLL {
+	Node* head;
+	Node* tail;
+public:
+	// default constructor
+	SLL()
+	{
+		head = tail = NULL;
+	}
+	// overloaded constructor
+	SLL(Node*h)
+	{
+		head = tail = h;
+	}
+	// APPEND list 
+	void append(int d)
+	{
+		if (head == NULL)
+		{
+			Node* tmp = new Node(d);
+				head = tail = tmp;
+			return;
+		}
+		else if (head->next == NULL)
+		{
+			Node* temp = tail;
+			Node* tmp = new Node(d);
+			temp->next = tmp;
+			tail = tail->next;
+			return;
+		}
+		else {
+			Node* tmp = new Node(d);
+			Node* temp = tail;
+			temp->next = tmp;
+			tail = tail->next;
+		}
+	}
+	// ATTACH AT START function
+	void attachAtFirst(int d)
+	{
+		if (head == NULL)
+		{
+
+			char choice;
+
+			do {
+				cout << "There is no element in the list  " << endl;
+				cout << "Do you want to add the element as first element ? (Y/N)" << endl;
+				cin >> choice;
+				if (choice == 'Y')
+				{
+					Node* temp = new Node(d);
+					head = tail = temp;
+					return;
+				}
+				else if (choice == 'N')
+				{
+					return;
+				}
+			} while (choice != 'Y' && choice != 'N');
+		}
+		else {
+			Node* temp = new Node(d);
+			temp->next = head;
+			head = temp;
+
+		}
+	
+	}
+	// ADD data before some particular record
+	void addBefore(int ref, int d)
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST EXISTS SO NO RECORD DOES" << endl;
+			return;
+		}
+		else if (head->data == ref)
+		{
+			attachAtFirst(d);
+		}
+		else {
+			Node* prev = NULL;
+			Node* temp = head;
+			while (ref!=temp->data)
+			{
+				prev = temp;
+				temp = temp->next;
+				if (temp == NULL)
+				{
+					cout << "NO RECORD EXISTS" << endl;
+					return;
+				}
+			}
+			Node* newNode = new Node(d);
+			prev->next = newNode;
+			newNode->next = temp->next;
+		}
+	}
+	// delete first Node
+	void deleteFirst()
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST EXISTS " << endl;
+			return;
+		}
+		else if (head->next == NULL)
+		{
+			delete head;
+			head = tail = nullptr;
+		}
+		else {
+			Node* temp = head->next;
+			delete head;
+			head = temp;
+		}
+	}
+	// delete Kth node
+	void deleteKthNode(int pos)
+	{
+		if (pos == 1)
+		{
+			deleteFirst();
+		}
+		else {
+			Node* temp = head;
+			Node* prev = NULL;
+			int cnt = 1;
+			while (cnt!=pos)
+			{
+				prev = temp;
+				temp = temp->next;
+				if (temp == NULL)
+				{
+					cout << "NO POSITION EXISTS " << endl;
+					return;
+				}
+				cnt++;
+			}
+			prev->next = temp->next;
+			delete temp;
+		}
+	}
+	// DELETE ALL function
+	void deleteAll()
+	{
+		Node* temp = head;
+		while (temp != NULL)
+		{
+			Node* current = temp->next;
+			delete temp;
+			temp = current;
+		}
+		head = tail = nullptr;
+	}
+	// PRINTING the reverse
+	void PrintReverse()
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST EXISTS " << endl;
+			return;
+		}
+		Node* temp = head;
+		int cnt = 0;
+		while (temp != NULL)
+		{
+			temp = temp->next;
+			cnt++;
+		}
+		cout << "----REVERSE PRINTING----" << endl;
+		for (int i = cnt-1; i >= 0; i--)
+		{
+			temp = head;
+			for (int j = 0; j < i; j++)
+			{
+				temp = temp->next;
+			}
+			cout << temp->data << " ";
+		}
+		cout << endl;
+	}
+	// REVERSE the list
+	void REVERSE()
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST EXISTS " << endl;
+			return;
+		}
+		else {
+			Node* current = head;
+			Node* prev = NULL;
+			Node* after = NULL;
+			while (current != NULL)
+			{
+				// store next node first
+				after = current->next;
+				// change the Nodes
+				current->next = prev;
+		
+				// move the pointers
+				prev = current;
+				current = after;
+				
+			}
+			head = prev;
+			return;
+		}
+	}
+	// DISPLAY LIST function
+	void show()
+	{
+		if (head == NULL)
+		{
+			cout << "NO ELEMENT IN THE LIST " << endl;
+		}
+		else {
+			Node* temp = head;
+			while (temp != NULL)
+			{
+				cout << temp->data << " ";
+				temp = temp->next;
+			}
+			cout << endl;
+		}
+	}
+	// DESTRUCTOR
+	~SLL()
+	{
+		Node* temp = head;
+		while (temp != NULL)
+		{
+			Node* current = temp->next;
+			delete temp;
+			temp = current;
+		}
+		head = tail = nullptr;
+	}
+};
+void displayMenu() {
+	cout << "Menu for Singly Linked List Operations\n";
+	cout << "1. Append a node to the list\n";
+	cout << "2. Show the list\n";
+	cout << "3. Attach a node at the beginning of the list\n";
+	cout << "4. Add a node before a specific value in the list\n";
+	cout << "5. Delete the first node in the list\n";
+	cout << "6. Delete the K-th node in the list\n";
+	cout << "7. Delete all nodes in the list\n";
+	cout << "8. Print the list in reverse order\n";
+	cout << "9. Reverse the list\n";
+	cout << "0. Exit\n";
+}
+
+int main() {
+	SLL* list = new SLL();
+	int choice, value, k;
+
+	do {
+		displayMenu();
+		cout << "Enter your choice: ";
+		cin >> choice;
+
+		switch (choice) {
+		case 1:
+			cout << "Enter value to append: ";
+			cin >> value;
+			list->append(value);
+			break;
+		case 2:
+			list->show();
+			break;
+		case 3:
+			cout << "Enter value to attach at first: ";
+			cin >> value;
+			list->attachAtFirst(value);
+			break;
+		case 4:
+			int beforeValue;
+			cout << "Enter value to add: ";
+			cin >> value;
+			cout << "Enter the value before which to add: ";
+			cin >> beforeValue;
+			list->addBefore(beforeValue, value);
+			break;
+		case 5:
+			list->deleteFirst();
+			break;
+		case 6:
+			cout << "Enter position (K-th node) to delete: ";
+			cin >> k;
+			list->deleteKthNode(k);
+			break;
+		case 7:
+			list->deleteAll();
+			break;
+		case 8:
+			list->PrintReverse();
+			break;
+		case 9:
+			list->REVERSE();
+			break;
+		case 0:
+			cout << "Exiting...\n";
+			break;
+		default:
+			cout << "Invalid choice, please try again.\n";
+			break;
+		}
+	} while (choice != 0);
+
+	delete list;
+	return 0;
+}
