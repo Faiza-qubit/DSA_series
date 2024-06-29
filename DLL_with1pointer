@@ -1,0 +1,305 @@
+// implementing DOUBLE LINKED LIST using 1 pointer
+#include<iostream>
+using namespace std;
+class Node {
+private:
+	int data;
+	Node* prev;
+	Node* next;
+	friend class DLL;
+public:
+	Node(int d, Node* p, Node* n)
+	{
+		data = d;
+		prev = p;
+		next = n;
+	}
+	Node(int d)
+	{
+		data = d;
+		prev = next = NULL;
+	}
+	~Node()
+	{
+		// default
+	}
+};
+class DLL {
+	Node* head;
+public:
+	DLL()
+	{
+		head = nullptr;
+	}
+	// APPEND function
+	void append(int d)
+	{
+		if (head == NULL)
+		{
+			Node* temp = new Node(d);
+			head = temp;
+		}
+		else {
+			Node* temp = head;
+			while (temp->next != nullptr)
+			{
+				temp = temp->next;
+			}
+			Node* newNode = new Node(d);
+			temp->next = newNode;
+			newNode->prev = temp;
+			
+		}
+	}
+	// Attach at first 
+	void attachFirst(int d)
+	{
+		if (head == NULL)
+		{
+			cout << "NO LIST EXISTS" << endl;
+			return;
+		}
+		else 
+		{
+			Node* temp = head;
+			Node* newNode = new Node(d);
+			temp->prev = newNode;
+			newNode->next = temp;
+			head = newNode;
+		}
+	}
+	// attach before some particular data
+	void attachBefore(int ref, int d)
+	{
+		if (head == nullptr)
+		{
+			cout << "LIST IS EMPTY SO DOES THE RECORD DOES NOT EXIST " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			while (temp->data!=ref)
+			{
+				
+				temp = temp->next;
+				if (temp == NULL)
+				{
+					cout << "NO RECORD EXITS " << endl;
+					return;
+				}
+			}
+			Node* newNode = new Node(d);
+			temp->prev->next = newNode;
+			temp->prev = newNode;
+			newNode->next = temp;
+		}
+	}
+	// DELETE first node
+	void deleteFirst()
+	{
+		if (head == nullptr)
+		{
+			cout << "NO LIST EXITS " << endl;
+			return;
+		}
+		Node* agla = head->next;
+		Node* temp = head;
+		delete temp;
+		head = agla;
+		agla->prev = nullptr;
+	}
+
+	int getLength() {
+		Node* temp = head;
+		int cnt = 0;
+		while (temp != NULL)
+		{
+			temp = temp->next;
+			cnt++;
+		}
+		return cnt;
+	}
+	// DELETE kth node
+	void deleteKthNode(int k)
+	{
+		if (k == 1)
+		{
+			deleteFirst();
+		}
+		else {
+			int cnt = 1;
+			Node* temp = head;
+			while (cnt != k)
+			{
+				
+				if (temp == NULL)
+				{
+					cout << "POSITION DOES NOT EXIST " << endl;
+					return;
+				}
+				temp = temp->next;
+				cnt++;
+			}
+			Node* newNode = temp;
+			newNode->prev->next = temp->next;
+			temp->next->prev = temp->prev;
+			delete newNode;
+		}
+	}
+	// DELETE ALL function
+	void deleteall()
+	{
+		Node* temp = head;
+		while (temp != nullptr)
+		{
+			Node* after = temp->next;
+			delete temp;
+			temp = after;
+		}
+		head = nullptr;
+	}
+	// reverse printing of the list 
+	void reversePrinting()
+	{
+		if (head == nullptr) { // Check if the list is empty
+			cout << "The list is empty." << endl;
+			return;
+		}
+
+		Node* temp = head;
+
+		while (temp->next != nullptr)
+		{
+			temp = temp->next;
+		}
+		while (temp != nullptr)
+		{
+			cout << temp->data << " ";
+			temp = temp->prev;
+		}
+
+		cout << endl; 
+	}
+	// REVERSE array
+	void REVERSE()
+	{
+		if (head == nullptr)
+		{
+			cout << "LIST IS EMPTY " << endl;
+			return;
+		}
+		else {
+			Node* current = head;
+			Node* prev = nullptr;
+			Node* after = nullptr;
+			while (current != nullptr)
+			{
+				// store the next node
+				after = current->next;
+				// change the nodes 
+				current->next = prev;
+				current->prev = after;
+				// move the pointers
+				prev = current;
+				current = after;
+			}
+			head = prev;
+		}
+	}
+	void show()
+	{
+		if (head == nullptr)
+		{
+			cout << "NO LIST EXISTS " << endl;
+		}
+		Node* temp = head;
+		while (temp != NULL)
+		{
+			cout << temp->data << " ";
+			temp = temp->next;
+		}
+		cout << endl;
+	}
+};
+void showMenu()
+{
+	cout << "Menu:" << endl;
+	cout << "1. Show list" << endl;
+	cout << "2. Attach at start" << endl;
+	cout << "3. Add before" << endl;
+	cout << "4. Delete first" << endl;
+	cout << "5. Delete all" << endl;
+	cout << "6. Delete kth" << endl;
+	cout << "7. Reverse (in-place)" << endl;
+	cout << "8. Append the list " << endl;
+	cout << "9. Reverse Printing of the list  " << endl;
+	cout << "10. Exit " << endl;
+	cout << "Enter your choice: ";
+}
+int main()
+{
+	int data;
+	DLL* list = new DLL();
+
+	int choice, ref;
+	while (true) {
+		showMenu();
+		cin >> choice;
+		switch (choice) {
+		case 1:
+			list->show();
+			break;
+		case 2:
+			cout << "Enter the data you want to add in the list: ";
+			cin >> data;
+			list->attachFirst(data);
+			break;
+		case 3:
+			cout << "Enter reference: ";
+			cin >> ref;
+			cout << "Enter the data you want to add in the list: ";
+			cin >> data;
+			list->attachBefore(ref, data);
+			break;
+		case 4:
+			list->deleteFirst();
+			break;
+		case 5:
+			list->deleteall();
+			break;
+		case 6:
+			cout << "Enter position to delete: ";
+			cin >> ref;
+			list->deleteKthNode(ref);
+			break;
+		case 7: {
+			list->REVERSE();
+			break;
+		}
+		case 8:
+		{
+			int d;
+			cout << "Enter the data you want to append the list with ? " << endl;
+			cin >> d;
+			list->append(d);
+			break;
+		}
+		case 9:
+		{
+			list->reversePrinting();
+			break;
+		}
+		case 10:
+			delete list;
+			return 0;
+			break;
+
+
+		default:
+			cout << "Invalid choice, please try again." << endl;
+		}
+	}
+
+	return 0;
+
+}
