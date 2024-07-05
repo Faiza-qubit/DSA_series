@@ -1,0 +1,110 @@
+#include <iostream>
+using namespace std;
+
+class stack {
+    int size;
+    int* stk;
+    int top;
+public:
+    stack() {
+        size = 0;
+        top = -1;
+        stk = nullptr;
+    }
+    stack(int s) {
+        size = s;
+        stk = new int[s];
+        top = -1;
+    }
+    // is FULL function
+    bool isFull() {
+        return (top == size - 1);
+    }
+    // is EMPTY function
+    bool isEmpty() {
+        return (top == -1);
+    }
+    // PUSH function
+    void push(int d) {
+        if (isFull()) {
+            cout << "STACK IS FULL " << endl;
+            return;
+        }
+        else {
+            stk[++top] = d;
+        }
+    }
+    // POP function
+    void pop() {
+        if (isEmpty()) {
+            cout << "STACK IS EMPTY " << endl;
+            return;
+        }
+        else {
+            top--;
+        }
+    }
+    void sortedInsertion() {
+        stack* newstk = new stack(size);
+        int cnt = top-1;
+        newstk->push(stk[top]); 
+        pop();
+        // right above 
+        while (top != -1) {
+            if (peek() > newstk->peek()) {
+                newstk->push(stk[top]);
+                pop();
+             
+            }
+            else {
+              
+                int min = peek();
+               
+                pop();
+              
+                show();
+               
+                while (min < newstk->peek()) {
+                    int element = newstk->peek();
+                    newstk->pop();
+                    push(element);
+                }
+                newstk->push(min);
+             
+            }
+    
+        }
+        newstk->show();
+            }
+        
+    int peek() {
+        int element = stk[top];
+        return element;
+    }
+    // SHOW function
+    void show() {
+        if (isEmpty()) {
+            cout << "STACK IS EMPTY" << endl;
+            return;
+        }
+        for (int i = 0; i <= top; i++) {
+            cout << stk[i] << " ";
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    int size;
+    cout << "enter the size of the stack " << endl;
+    cin >> size;
+    stack stk1(size);
+    for (int i = 0; i < size; i++) {
+        int data;
+        cout << "enter data: " << endl;
+        cin >> data;
+        stk1.push(data);
+    }
+    stk1.sortedInsertion();
+    return 0;
+}
