@@ -1,0 +1,207 @@
+// implementing CIRCULAR SINGLElinked list
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* next;
+	friend class cdll;
+public:
+	Node() {
+		data = 0;
+		next = nullptr;
+	}
+	Node(int d) {
+		data = d;
+		next = nullptr;
+	}
+
+};
+class cdll {
+	Node* head;
+	Node* tail;
+public:
+	cdll() {
+		head = tail = nullptr;
+	}
+	void insertFirstNode(int d) {
+		Node* node1 = new Node(d);
+		head = tail = node1;
+		tail->next = head;
+	}
+	// append function
+	void append(int d) {
+		if (head == nullptr)
+		{
+			Node* node1 = new Node(d);
+			head = node1;
+			tail = node1;
+			tail->next = head;
+		}
+		else {
+			Node* node1 = new Node(d);
+			tail->next = node1;
+			node1->next = head;
+			tail = tail->next;
+		}
+	}
+	// insert At beginning
+	void insertAtBeginning(int d)
+	{
+		if (head == nullptr) {
+			insertFirstNode(d);
+		}
+		else {
+			Node* node1 = new Node(d);
+			node1->next = head;
+			head = node1;
+			tail->next = head;
+		}
+	}
+	void delete1stNode() {
+
+		Node* node1 = head;
+		head = head->next;
+		tail->next = head;
+		delete node1;
+		return;
+	}
+	void deleteTail(Node*& prev) {
+
+		Node* temp = tail;
+		tail = prev;
+		tail->next = head;
+		delete temp;
+		return;
+	}
+	// DELETE first occurence 
+	void deleteFirst(int ref) {
+		if (head == nullptr) {
+			cout << "NO LIST EXISTS " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			Node* prev = nullptr;
+			do {
+				if (temp->data == ref) {
+					if (temp == head) {
+						delete1stNode();
+						return;
+					}
+					else if (temp == tail) {
+						deleteTail(prev);
+						return;
+					}
+					else {
+						Node* t = temp;
+						prev->next = temp->next;
+						delete t;
+						return;
+					}
+				}
+				prev = temp;
+				temp = temp->next;
+
+			} while (temp != head);
+			cout << "NO OCCURENCE FOUND " << endl;
+
+		}
+	}
+	
+	bool isPalindrome()
+	{
+		Node* start = head;
+		int len = getLength();
+		Node* t = head;
+		Node* end = tail;
+	
+		
+		while (start != end) {
+
+			if (start->data != end->data) {
+				
+				return false;
+			}
+			start = start->next;
+		
+			Node* temp = head;
+			for (int i = 1 ; i < len-1 ; i++) {
+				temp = temp->next;;
+			}
+			end = temp;
+			len--;
+		}
+		return true;
+	}
+	// get Length function
+	int getLength() {
+		Node* temp = head;
+		int cnt = 0;
+		do {
+			cnt++;
+			temp = temp->next;
+		} while (temp != head);
+		return cnt;
+	}
+	// reverse printing
+	void REVERSE() {
+		Node* prev = nullptr;
+		Node* current = head;
+		Node* after = nullptr;
+		do {
+			// store the next 
+			after = current->next;
+			// change the nodes
+			current->next = prev;
+			// move the pointers ahead
+			prev = current;
+			current = after;
+
+
+		} while (current != head);
+		head = prev;
+		tail = after;
+		tail->next = head;
+		return;
+	}
+	// show function
+	void show() {
+		if (head == nullptr)
+		{
+			cout << " LIST IS EMPTY " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			do {
+				cout << temp->data << " ";
+				temp = temp->next;
+			} while (temp != head);
+			cout << endl;
+		}
+	}
+};
+int main()
+{
+	cdll* cdll1 = new cdll();
+	int size;
+	cout << "Give me the size of the list " << endl;
+	cin >> size;
+	for (int i = 0; i < size; i++)
+	{
+		int data;
+		cout << "enter data to be entered in the list : " << endl;
+		cin >> data;
+		cdll1->append(data);
+	}
+	
+	cdll1->show();
+	if (cdll1->isPalindrome()) {
+		cout << "LIST IS PALINDROME " << endl;
+		return 0;
+	}
+	else {
+		cout << "LIST IS NOT PALINDROME " << endl;
+	}
+	
+}
