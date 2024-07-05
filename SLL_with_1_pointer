@@ -1,0 +1,199 @@
+// implementing CIRCULAR SINGLElinked list
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* next;
+	friend class cdll;
+public:
+	Node() {
+		data = 0;
+		next = nullptr;
+	}
+	Node(int d) {
+		data = d;
+		next = nullptr;
+	}
+	
+};
+class cdll {
+	Node* head;
+	Node* tail;
+public:
+	cdll() {
+		head = tail = nullptr;
+	}
+	void insertFirstNode(int d) {
+		Node* node1 = new Node(d);
+		head = tail = node1;
+		tail->next = head;
+	}
+	// append function
+	void append(int d) {
+		if (head == nullptr)
+		{
+			Node* node1 = new Node(d);
+			head = node1;
+			tail = node1;
+			tail->next = head;
+		}
+		else {
+			Node* node1 = new Node(d);
+			tail->next = node1;
+			node1->next = head;
+			tail = tail->next;
+		}
+	}
+	// insert At beginning
+	void insertAtBeginning(int d)
+	{
+		if (head == nullptr) {
+			insertFirstNode(d);
+		}
+		else {
+			Node* node1 = new Node(d);
+			node1->next = head;
+			head = node1;
+			tail->next = head;
+		}
+	}
+	void delete1stNode() {
+
+		Node* node1 = head;
+		head = head->next;
+		tail->next = head;
+		delete node1;
+		return;
+	}
+	void deleteTail(Node*&prev) {
+
+		Node* temp = tail;
+		tail = prev;
+		tail->next = head;
+		delete temp;
+		return;
+	}
+	// DELETE first occurence 
+	void deleteFirst(int ref) {
+		if (head == nullptr) {
+			cout << "NO LIST EXISTS " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			Node* prev = nullptr;
+			do {
+				if (temp->data == ref) {
+					if (temp == head) {
+						delete1stNode();
+						return;
+					}
+					else if (temp == tail) {
+						deleteTail(prev);
+						return;
+					}
+					else {
+						Node* t = temp;
+						prev->next = temp->next;
+						delete t;
+						return;
+					}
+				}
+				prev = temp;
+				temp = temp->next;
+
+			} while (temp != head);
+			cout << "NO OCCURENCE FOUND " << endl;
+			
+		}
+	}
+	// get Length function
+	int getLength() {
+		Node* temp = head;
+		int cnt = 0;
+		do {
+			cnt++;
+			temp = temp->next;
+		} while (temp != head);
+		return cnt;
+	}
+	// reverse printing
+	void REVERSE() {
+		Node* prev = nullptr;
+		Node* current = head;
+		Node* after = nullptr;
+		do {
+			// store the next 
+			after = current->next;
+			// change the nodes
+			current->next = prev;
+			// move the pointers ahead
+			prev = current;
+			current = after;
+
+			
+		} while (current != head);
+		head = prev;
+		tail = after;
+		tail->next = head;
+		return;
+	}
+	// show function
+	void show() {
+		if (head == nullptr)
+		{
+			cout << " LIST IS EMPTY " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			do {
+				cout << temp->data << " ";
+				temp = temp->next;
+			} while (temp != head);
+			cout << endl;
+		}
+	}
+};
+int main() {
+	cdll cdll1;
+	int choice, data;
+
+	while (true) {
+		menu();
+		cin >> choice;
+
+		switch (choice) {
+		case 1:
+			cout << "Enter data to append: ";
+			cin >> data;
+			cdll1.append(data);
+			break;
+		case 2:
+			cout << "Enter data to insert at beginning: ";
+			cin >> data;
+			cdll1.insertAtBeginning(data);
+			break;
+		case 3:
+			cout << "Enter data to delete: ";
+			cin >> data;
+			cdll1.deleteFirst(data);
+			break;
+		case 4:
+			cout << "Length of the list: " << cdll1.getLength() << endl;
+			break;
+		case 5:
+			cdll1.REVERSE();
+			cout << "List reversed." << endl;
+			break;
+		case 6:
+			cdll1.show();
+			break;
+		case 7:
+			cout << "Exiting..." << endl;
+			return 0;
+		default:
+			cout << "Invalid choice. Please try again." << endl;
+		}
+	}
+}
