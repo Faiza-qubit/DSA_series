@@ -1,0 +1,621 @@
+// implementing CIRCULAR DOUBLE linked list
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* prev;
+	Node* next;
+	friend class CDLL;
+public:
+	Node() {
+		data = 0;
+		prev = next = nullptr;
+	}
+	Node(int d) {
+		data = d;
+		prev = next = nullptr;
+	}
+	Node(int d, Node* p, Node* n) {
+		data = d;
+		prev = p;
+		next = n;
+	}
+};
+class CDLL {
+	Node* head;
+	Node* tail;
+public:
+	// DEFAULT CONSTRUCTOR
+	CDLL()
+	{
+		head = tail = nullptr;
+		
+	} 
+	
+	// OVERLOADED CONSTRUCTOR BY PASSING  DATA
+	CDLL(int d) {
+		head = new Node(d);
+		tail = head;
+		head->prev = tail;
+		tail->next = head;
+	}
+	
+	// INSERT AT START FUNCTION
+	void insertAtStart(int d)
+	{
+		if (head == nullptr)
+		{
+
+			cout << "Data is being entered as first node ." << endl;
+				Node* newNode = new Node(d);
+				head = tail = newNode;
+				head->prev = tail;
+				tail->next = head;
+				return;
+			
+		}
+		else {
+			Node* newNode = new Node(d);
+			head->prev = newNode;
+			newNode->next = head;
+			head = newNode;
+			head->prev = tail;
+			tail->next = head;
+		}
+		cout << "                  " << endl;
+		cout << "Data inserted successfully " << endl;
+		cout << "--------------------------" << endl;
+	}
+	// INSERT AT END FUNCTION
+	void insertAtEnd(int d)
+	{
+		if (head == nullptr)
+		{
+			cout << "Data is being entered as first node ." << endl;
+					Node* temp = new Node(d);
+					head = tail = temp;
+					head->prev = tail;
+					tail->next = head;
+					return;
+				
+		}
+		else {
+			Node* newNode = new Node(d);
+			Node* temp = tail;
+			tail->next = newNode;
+			newNode->prev = temp;
+			tail = newNode;
+			tail->next = head;
+			head->prev = tail;
+			
+
+		}
+		cout << "                " << endl;
+		cout << "Data inserted successfully " << endl;
+		cout << "--------------------------" << endl;
+	}
+	// INSERT AFTER SOME RECORD FUNCTION
+	void insertAfter(int ref, int d)
+	{
+		if (head == nullptr) {
+			cout << "RECORD NOT FOUND " << endl;
+			return;
+		}
+
+		Node* newNode = new Node(d);
+		Node* temp = head;
+		do {
+			if (temp->data == ref)
+			{
+				if (temp == tail) {
+					tail->next = newNode;
+					newNode->prev = tail;
+					newNode->next = head;
+					head->prev = newNode;
+					tail = newNode;
+
+				}
+				else {
+					newNode->next = temp->next;
+					newNode->prev = temp;
+					temp->next->prev = newNode;
+					temp->next = newNode;
+
+
+				}
+				return;
+			}
+			temp = temp->next;
+		} while (temp != head);
+		cout << "RECORD NOT FOUND " << endl;
+	}
+
+
+	
+	// INSERT BEFORE SOME RECORD FUNCTION
+	void insertBefore(int ref, int d)
+	{
+		if (head == nullptr)
+		{
+			cout << "NO RECORD FOUND " << endl;
+			return;
+		}
+		else {
+			Node* newNode = new Node(d);
+			Node* temp = head;
+
+			do
+			{
+				if (temp->data == ref)
+				{
+					if (temp == head) {
+
+						temp->prev = newNode;
+						newNode->next = temp;
+						head = newNode;
+						head->prev = tail;
+						tail->next = head;
+						return;
+					}
+
+					else {
+						temp->prev->next = newNode;
+						newNode->prev = temp->prev;
+						newNode->next = temp;
+						temp->prev = newNode;
+						return;
+					}
+				}
+
+				temp = temp->next;
+
+
+			} while (temp != head);
+
+			cout << "Record not found in the list " << endl;
+		}
+
+	}
+	// DELETE FIRST OCCURENCE OF NODE WITH VALUE K
+	void deleteFirstOccurence(int k) {
+		if (head == nullptr) {
+			cout << "LIST DON'T EXIST " << endl;
+			return;
+		}
+		else if (head == tail)
+		{
+			if (head->data == k)
+			{
+				delete head;
+				head = tail = nullptr;
+			}
+			else
+			{
+				cout << "RECORD NOT FOUND " << endl;
+				return;
+			}
+		}
+		else {
+			Node* temp = head;
+			do {
+				if (temp->data == k) {
+					if (temp == head) {
+						Node* t = head;
+						head = head->next;
+						head->prev = tail;
+						tail->next = head;
+						delete t;
+						return;
+					}
+					else if (temp == tail) {
+						Node* t = tail;
+						tail = tail->prev;
+						head->prev = tail;
+						tail->next = head;
+						delete t;
+						return;
+					}
+					else {
+						Node* t = temp;
+						temp->prev->next = temp->next;
+						temp->next->prev = temp->prev;
+						delete temp;
+						return;
+					}
+				}
+				temp = temp->next;
+			} while (temp != head);
+			cout << "RECORD TO DELETE NOT FOUND " << endl;
+		}
+	}
+	// DELETE Kth OCCURENCE OF NODE WITH VALUE K
+	void deleteKthOccurence(int digit, int k) {
+		// handling the edge cases
+		if (head == nullptr) {
+			cout << "NO LIST FOUND " << endl;
+			return;
+		}
+		// 1 Node case
+		else if (head == tail) {
+			if (k == 1 && head->data == digit) {
+				Node* t = head;
+				delete t;
+				head = tail = nullptr;
+				return;
+			}
+			cout << "RECORD TO DELETE NOT FOUND IN THE LIST " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			int count = 0;
+			bool isFound = false;
+			do {
+				if (temp->data == digit) {
+					count++;
+					if (count == k) {
+						isFound = true;
+						break;
+					}
+				}
+
+				temp = temp->next;
+			} while (temp != head);
+			if (isFound && temp == head) {
+				Node* t = temp;
+				head = head->next;
+				head->prev = tail;
+				tail->next = head;
+				delete t;
+				return;
+			}
+			else if (isFound && temp == tail) {
+				Node* t = tail;
+				tail = tail->prev;
+				head->prev = tail;
+				tail->next = head;
+				delete t;
+				return;
+			}
+			else if (isFound)
+			{
+				Node* t = temp;
+				temp->prev->next = temp->next;
+				temp->next->prev = temp->prev;
+				delete t;
+				return;
+			}
+			cout << " RECORD NOT FOUND " << endl;
+		}
+	}
+
+	
+	void deleteAll(int k) {
+		if (head == nullptr) {
+			cout << "LIST IS EMPTY "<< endl;
+			return;
+		}
+
+		Node* temp = head;
+		bool found = false;
+		do {
+			if (temp->data == k) {
+				found = true;
+				Node* toDelete = temp;
+				if (temp == head && temp == tail) {
+					delete head;
+					head = tail = nullptr;
+				}
+				else if (temp == head) {
+					head = head->next;
+					head->prev = tail;
+					tail->next = head;
+				}
+				else if (temp == tail) {
+					tail = tail->prev;
+					tail->next = head;
+					head->prev = tail;
+				}
+				else {
+					temp->prev->next = temp->next;
+					temp->next->prev = temp->prev;
+				}
+				temp = temp->next;
+				delete toDelete;
+			}
+			else {
+				temp = temp->next;
+			}
+		} while (temp != head);
+
+		if (!found) {
+			cout << "No occurrences found."<< endl;
+		}
+		else {
+			cout << "All occurrences of " << k << " deleted."<< endl;
+		}
+	}
+
+	// REVERSE PRINTING 
+	void reversePrinting() {
+		if (head == nullptr) {
+			cout << "REOCRD NOT FOUND " << endl;
+			return;
+		}
+		else {
+			Node* temp = tail;
+			do {
+				cout << temp->data << " ";
+				temp = temp->prev;
+			} while (temp != tail);
+		}
+	}
+	// REVERSE
+	void REVERSE() {
+		if (head == nullptr) {
+			cout << "RECORD NOT FOUND " << endl;
+			return;
+		}
+		else {
+			Node* prev = nullptr;
+			Node* after = nullptr;
+			Node* current = head;
+			do {
+				// store the next temp
+				after = current->next;
+				// changing the nodes positions 
+
+				current->next = prev;
+				current->prev = after;
+
+				// Move the pointers ahead
+				prev = current;
+				current = after;
+
+			} while (current != head);
+			head = prev;
+			tail = after;
+			tail->next = head;
+			head->prev = tail;
+			return;
+		}
+	}
+	// SHOW FUNCTION
+	void show() {
+		if (head == nullptr) {
+			cout << "LIST IS EMPTY " << endl;
+			return;
+		}
+		else {
+			Node* temp = head;
+			cout << "----LINKED LIST----" << endl;
+			do {
+				cout << temp->data << " ";
+				temp = temp->next;
+			} while (temp != head);
+			cout << endl;
+		}
+
+	}
+	// ASCENDING SORTED INSERTON
+	void ascendingSortedInsertion(int d) {
+		cout << "This function will make sure that every new sorted node " << endl;
+		cout << "is placed in right order to maintain the order of the list " << endl;
+		cout << "------------------------------- " << endl;
+		if (head == nullptr) {
+			
+				Node* newNode = new Node(d);
+				head = tail =  newNode;
+				head->prev = tail;
+				tail->next = head;
+			
+		}
+		else {
+			Node* temp = head;
+			do {
+				if (temp->data >= d) { break; }
+				
+				temp = temp->next;
+			} while (temp != head );
+
+			if (temp == head && temp->data > d ) {
+				insertAtStart(d);
+				
+			}
+			else if (temp == tail && temp->data > d ) {
+				insertAtEnd(d);
+				
+			}
+			else {
+				Node* newNode = new Node(d);
+				newNode->prev = temp->prev;
+				newNode->next = temp;
+				temp->prev->next = newNode;
+				temp->prev = newNode;
+
+			}
+			
+		}
+	}
+	// DESCENDING SORTED INSERTION
+	void descendingSortedInsertion(int d) {
+		cout << "This function will make sure that every new sorted node " << endl;
+		cout << "is placed in right order to maintain the order of the list " << endl;
+		cout << "------------------------------- " << endl;
+		if (head == nullptr) {
+			Node* newNode = new Node(d);
+			head = tail = newNode;
+			head->prev = tail;
+			tail->next = head;
+		}
+		else {
+			Node* temp = head;
+			do {
+				if (temp->data <= d) { break; }
+				temp = temp->next;
+			} while (temp != head);
+			if (temp == head && temp->data < d) {
+				insertAtStart(d);
+				
+			}
+			else if (temp == tail && temp->data < d) {
+				insertAtEnd(d);
+				
+			}
+			else {
+				Node* newNode = new Node(d);
+				newNode->next = temp;
+				newNode->prev = temp->prev;
+				temp->prev->next = newNode;
+				temp->prev = newNode;
+			}
+		}
+	}
+	// DESTRUCTOR
+	~CDLL() {
+		if (head == nullptr) {
+			cout << "LIST IS EMPTY " << endl;
+			 }
+		else {
+			
+			Node* temp = head;
+			do {
+				Node* t = temp->next;
+				delete temp;
+				temp = t;
+			} while (temp != head);
+			head = tail = nullptr;
+		}
+	}
+};
+int main()
+{
+	int choice;
+	int data,ask;
+	CDLL* cdll = new CDLL();
+	
+	cout << "------CIRCULAR DOUBLE LINKED LIST-----" << endl << endl;
+	do {
+		cout << endl;
+		cout << "1. Insertion at the end " << endl;
+		cout << "2. Insertion at the start " << endl;
+		cout << "3. Insertion before some record " << endl;
+		cout << "4. Insertion after some record " << endl;
+		cout << "5. Deletion of first occurence with particular value " << endl;
+		cout << "6. Deletion of Kth occurence of particular data " << endl;
+		cout << "7. Deletion of all occurences " << endl;
+		cout << "8. Reverse display " << endl;
+		cout << "9. In place Reversing of list " << endl;
+		cout << "10. Ascending sorted insertion of list " << endl;
+		cout << "11. Descending sorted insertion of list " << endl;
+		cout << "12. Printing the list " << endl;
+		cout << "13. Destructor call  " << endl;
+		cout << "14. Exit " << endl;
+	
+		cout << "Enter choice : " << endl;
+		cin >> choice;
+		switch (choice) {
+		case 1:
+		{
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->insertAtEnd(data);
+			break;
+		}
+		case 2:
+		{
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->insertAtStart(data);
+			break;
+		}
+		case 3:
+		{
+			int ref;
+			cout << "Enter reference data : " << endl;
+			cin >> ref;
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->insertBefore(ref, data);
+			break;
+		}
+		case 4:
+		{
+			int ref;
+			cout << "Enter reference data: " << endl;
+			cin >> ref;
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->insertAfter(ref, data);
+			break;
+		}
+		case 5:
+		{
+			cout << "Enter data: " << endl;
+			cin >> data;
+			cdll->deleteFirstOccurence(data);
+			break;
+		}
+		case 6:
+		{
+			cout << "Enter data : " << endl;
+			cin >> data;
+			int pos;
+			cout << "Enter which occurence of data is to be removed " << endl;
+			cin >> pos;
+			cdll->deleteKthOccurence(data, pos);
+			break;
+		}
+		case 7:
+		{
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->deleteAll(data);
+			break;
+		}
+		case 8:
+		{
+			cdll->reversePrinting();
+			break;
+		}
+		case 9:
+		{
+			cdll->REVERSE();
+			break;
+		}
+		case 10:
+		{
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->ascendingSortedInsertion(data);
+			break;
+		}
+		case 11:
+		{
+			cout << "Enter data : " << endl;
+			cin >> data;
+			cdll->descendingSortedInsertion(data);
+			break;
+		}
+		case 12:
+		{
+			
+			cdll->show();
+			break;
+		}
+		case 13:
+		{
+			delete cdll;
+			cout << "BYE BYE :)" << endl;
+			return 0;
+		}
+		case 14:
+		{
+			cout << "BYE BYE :)" << endl;
+			return 0;
+		}
+		}
+		
+	} while (choice != 14);
+	
+}
