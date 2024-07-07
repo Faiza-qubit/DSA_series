@@ -1,0 +1,165 @@
+#include<iostream>
+using namespace std;
+class Node {
+	int value;
+	Node* next;
+	friend class SLL;
+public:
+	Node() {
+		value = 0;
+		next = nullptr;
+	}
+	Node(int d) {
+		value = d;
+		next = nullptr;
+	}
+};
+class SLL {
+	Node* top;
+	Node* bottom;
+public:
+	// constructor
+	SLL() {
+		top = nullptr;
+		bottom = nullptr;
+	}
+	// is Empty function
+	bool isEmpty() {
+		if (top == nullptr)
+			return true;
+		else
+			return false;
+	}
+	// stack PUSH function
+	void push(int d) {
+		if (isEmpty()) {
+			Node* newNode = new Node(d);
+			top = bottom = newNode;
+			return;
+		}
+		else {
+			Node* newNode = new Node(d);
+			top->next = newNode;
+			top = newNode;
+		}
+	}
+	// stack POP function
+	void pop() {
+		if (!isEmpty()) {
+			Node* temp = bottom;
+			Node* prev = nullptr;
+			while (temp != top) {
+				if (temp == nullptr && temp == bottom) {
+					top = bottom = nullptr;
+				}
+				prev = temp;
+				temp = temp->next;
+			}
+			top = prev;
+			delete temp;
+			temp = nullptr;
+			
+		}
+		else {
+			cout << "Stack is empty " << endl;
+		}
+
+	}
+	// TOP returning function
+	int Top() {
+		if (top)
+			return top->value;
+		else
+			throw runtime_error("Stack is empty so does the top ");
+	}
+	// stack SIZE function
+	int size() {
+		int cnt = 0;
+		if (!isEmpty()) {
+
+
+			Node* temp = bottom;
+			Node* after = bottom->next;
+
+			while (temp->next != nullptr) {
+
+				++cnt;
+				temp = after;
+				after = temp->next;
+			}
+			return cnt+1;
+		}
+		return cnt;
+	}
+	// stack PRINT function
+	void Print() {
+		if (top == nullptr) {
+			cout << "NO STACK EXISTS " << endl;
+			return;
+		}
+		cout << "----STACK----" << endl;
+		Node* temp = bottom;
+		while (temp != top->next) {
+			cout << temp->value << " ";
+			temp = temp->next;
+		}
+		cout << endl;
+	}
+	// DESTRUCTOR
+	~SLL() {
+		while (!isEmpty()) {
+			pop();
+		}
+	}
+};
+
+int main() {
+	SLL* stk = new SLL();
+	int choice, value;
+
+	do {
+		cout << endl << endl;
+		cout << "----STACK USING SLL2----" << endl;
+		cout << "1. Push"<<endl;
+		cout << "2. Pop "<< endl;
+		cout << "3. Top "<< endl;
+		cout << "4. Size"<< endl;
+		cout << "5. Print"<< endl;
+		cout << "6. Exit"<< endl;
+		cout << "Enter your choice: " << endl;
+		cin >> choice;
+
+		switch (choice) {
+		case 1:
+			cout << "Enter value to push: ";
+			cin >> value;
+			stk->push(value);
+			break;
+		case 2:
+			stk->pop();
+			break;
+		case 3:
+			try {
+				cout << "Top of stack: " << stk->Top() << endl;
+			}
+			catch (exception& e) {
+				cout << e.what() << endl;
+			}
+			break;
+		case 4:
+			cout << "Stack size: " << stk->size() << endl;
+			break;
+		case 5:
+			stk->Print();
+			break;
+		case 6:
+			delete stk;
+			cout << "BYE BYE :)" << endl;
+			return 0;
+		default:
+			cout << "Invalid choice. Please try again." << endl;
+		}
+	} while (choice != 6);
+
+	return 0;
+}
