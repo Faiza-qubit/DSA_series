@@ -1,0 +1,153 @@
+#include<iostream>
+using namespace std;
+class Node {
+	int data;
+	Node* prev;
+	Node* next;
+	friend class DLL;
+public:
+	Node() {
+		data = 0;
+		prev = next = nullptr;
+	}
+	Node(int d) {
+		data = d;
+		prev = next = nullptr;
+	}
+};
+class DLL {
+	Node* top;
+public:
+	// DLL constructor
+	DLL() {
+		top = nullptr;
+	}
+	// DLL overloaded constructor
+	DLL(int d) {
+		top = new Node(d);;
+	}
+	// IS EMPTY function
+	bool isEmpty() {
+		if (top == nullptr) { return true; }
+		return false;
+	}
+	// PUSH function
+	void push(int d) {
+		if (isEmpty())
+		{
+			top = new Node(d);
+			return;
+		}
+		else {
+			Node* newNode = new Node(d);
+			top->next = newNode;
+			newNode->prev = top;
+			top = newNode;
+
+		}
+	}
+	// POP function
+	void pop() {
+		if (isEmpty()) {
+			cout << "STACK IS EMPTY " << endl;
+			return;
+		}
+		else {
+			Node* temp = top;
+			top = top->prev;
+			delete temp;
+			temp = nullptr;
+		}
+	}
+	void print() {
+		if (top == nullptr) {
+			cout << "STACK IS EMPTY " << endl;
+			return;
+		}
+		Node* temp = top;
+		while (temp != nullptr) {
+			cout << temp->data << " ";
+			temp = temp->prev;
+		}
+		cout << endl;
+	}
+	// TOP examination function
+	int Top() {
+		if (!top) {
+			throw runtime_error("STACK IS EMPTY SO DOES THE TOP ");
+		}
+		return top->data;
+	}
+	// SIZE returning function
+	int Size() {
+		int cnt = 0;
+		if (top == nullptr) { return cnt; }
+		
+		Node* temp = top;
+		while (temp != nullptr) {
+			temp = temp->prev;
+			cnt++;
+		}
+		return cnt;
+	}
+};
+int main() {
+	DLL* dll1 = new DLL();
+	
+		int choice, value;
+
+		do {
+			cout << "----STACK----" << endl;
+			cout << "1. Push "<<endl;
+			cout << "2. Pop "<< endl;
+			cout << "3. Top "<<endl;
+			cout << "4. Size "<< endl;
+			cout << "5. Print "<< endl;
+			cout << "6. Is stack empty ? "<< endl;
+			cout << "7. Exit " << endl;
+			cout << "Enter your choice: ";
+			cin >> choice;
+
+			switch (choice) {
+			case 1:
+				cout << "Enter value to push: ";
+				cin >> value;
+				dll1->push(value);
+				break;
+			case 2:
+				dll1->pop();
+				break;
+			case 3:
+				try {
+					cout << "Top element: " << dll1->Top() << endl;
+				}
+				catch (exception& e) {
+					cout << e.what() << endl;
+				}
+				break;
+			case 4:
+				cout << "Size of stack: " << dll1->Size() << endl;
+				break;
+			case 5:
+				dll1->print();
+				break;
+			case 7:
+				delete dll1;
+				cout << "BYE BYE :)" << endl;
+				return 0;
+			case 6:
+				if (dll1->isEmpty()) {
+					cout << "Stack is empty " << endl;
+					break;
+				}
+				else {
+					cout << "Stack is not empty " << endl;
+					break;
+				}
+			default:
+				cout << "Invalid choice, please try again.\n";
+			}
+		} while (choice != 7);
+
+		
+	}
