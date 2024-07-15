@@ -1,0 +1,165 @@
+#include<iostream>
+#include<stack>
+#include<string>
+using namespace std;
+
+class Calculator {
+private:
+    string infix;
+    string postfix;
+    char delimeter;
+public:
+    string infixToPostfix();
+    int evaluatePostfix();
+    void setInfix(string s);
+};
+
+// i have tried delimeter insertion in infix but time has overed so i couldn't complete it :)
+
+void Calculator::setInfix(string s) {
+    infix = ""; 
+
+    for (int i = 0; i < s.size(); i++) {
+        string operand;
+        int ascii = (int)s[i];
+
+        if (ascii >= 48 && ascii <= 57) {
+            
+            while (i < s.size() && isdigit(s[i])) {
+                operand += s[i]; 
+                i++;
+            }
+            infix += operand + '$'; 
+            i--; 
+        }
+        else {
+           
+            infix += s[i]; 
+        }
+    }
+    cout << infix << endl;
+}
+
+
+int precedence(char op) {
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
+    return 0;
+}
+
+string Calculator::infixToPostfix() {
+    stack<string> exp; 
+    stack<char> op;    
+
+    for (int i = 0; i < infix.size();i++ ) {
+        
+        int asciiValue = (int)infix[i];
+        if (infix[i] == '$') {
+            string n(1, infix[i]);
+            exp.push(n);
+        }
+        if (asciiValue >= 48 && asciiValue <= 57) {
+            // If it is an operand
+            string n;
+            while (infix[i]!='$'&&isdigit(infix[i])) {
+                
+                n += infix[i];
+                i++;
+            }
+            i--;
+            
+            exp.push(n);
+        }
+        else {
+            // If it is an operator
+            while (!op.empty() && precedence(op.top()) >= precedence(infix[i])) {
+                string v2 = exp.top();
+                exp.pop();
+                string v1 = exp.top();
+                exp.pop();
+                string n = v1 + v2 + op.top();
+                exp.push(n);
+                op.pop();
+            }
+            op.push(infix[i]);
+        }
+    }
+
+    while (!op.empty()) {
+        string v2 = exp.top();
+        exp.pop();
+        string v1 = exp.top();
+        exp.pop();
+        string n = v1 + v2 + op.top();
+        exp.push(n);
+        op.pop();
+       
+    }
+    
+    postfix = exp.top();
+    return postfix;
+}
+
+int Calculator::evaluatePostfix() {
+    stack<int> exp;
+    for (int i = 0; i < postfix.size(); i++) {
+        if (postfix[i] == '$') { continue; }
+        int ascii = (int)postfix[i];
+        string n ;
+        if (ascii >= 48 && ascii <= 57) {
+            while (postfix[i] != '$' && i<postfix.size()) {
+                n += postfix[i++];
+            }
+            int c = stoi(n);
+            exp.push(c);
+            i--;
+        }
+        else {
+            int v2 = exp.top();
+            exp.pop();
+            int v1 = exp.top();
+            exp.pop();
+            if (postfix[i] == '+') exp.push(v1 + v2);
+            if (postfix[i] == '-') exp.push(v1 - v2);
+            if (postfix[i] == '*') exp.push(v1 * v2);
+            if (postfix[i] == '/') exp.push(v1 / v2);
+        }
+    }
+    return exp.top();
+}
+
+int main() {
+    Calculator c1;
+    int choice;
+    string input;
+
+    do {
+        cout << "1. infix to postfix conversion   " << endl;
+        cout << "2. evaluate postfix expression " << endl;
+        cout << "3.  exit " << endl;
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter an infix expression: ";
+            cin >> input;
+            c1.setInfix(input);
+            cout << "Converting infix to postfix"<< endl;
+            cout << "Postfix expression: " << c1.infixToPostfix() << endl;
+            break;
+        case 2:
+            cout << "Evaluating postfix expression"<< endl;
+            cout << "Ans: " << c1.evaluatePostfix() << endl;
+            break;
+        case 3:
+            cout << "BYE :)" << endl;
+            break;
+        default:
+            cout << "Invalid choice. Please try again."<< endl;
+        }
+
+    } while (choice != 3);
+
+    
+}
+
