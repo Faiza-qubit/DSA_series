@@ -1,0 +1,184 @@
+#include<iostream>
+using namespace std;
+class Node {
+	int value;
+	Node* next;
+	friend class stack;
+public:
+	Node() {
+		value = 0;
+		next = nullptr;
+	}
+	Node(int d) {
+		value = d;
+		next = nullptr;
+	}
+};
+class stack {
+	Node* top;
+	Node* bottom;
+	friend class Queue;
+public:
+	// constructor
+	stack() {
+		top = nullptr;
+		bottom = nullptr;
+	}
+	// is Empty function
+	bool isEmpty() {
+		if (top == nullptr)
+			return true;
+		else
+			return false;
+	}
+	// stack PUSH function
+	void push(int d) {
+		if (isEmpty()) {
+			Node* newNode = new Node(d);
+			top = bottom = newNode;
+			return;
+		}
+		else {
+			Node* newNode = new Node(d);
+			top->next = newNode;
+			top = newNode;
+		}
+	}
+	// stack POP function
+	void pop() {
+		if (!isEmpty()) {
+			Node* temp = bottom;
+			Node* prev = nullptr;
+			while (temp != top) {
+				if (temp == nullptr && temp == bottom) {
+					top = bottom = nullptr;
+				}
+				prev = temp;
+				temp = temp->next;
+			}
+			top = prev;
+			delete temp;
+			temp = nullptr;
+
+		}
+		else {
+			cout << "Stack is empty " << endl;
+		}
+
+	}
+	// TOP returning function
+	int Top() {
+		if (top)
+			return top->value;
+		else
+			throw runtime_error("Stack is empty so does the top ");
+	}
+	// stack SIZE function
+	int size() {
+		int cnt = 0;
+		if (!isEmpty()) {
+
+
+			Node* temp = bottom;
+			Node* after = bottom->next;
+
+			while (temp->next != nullptr) {
+
+				++cnt;
+				temp = after;
+				after = temp->next;
+			}
+			return cnt + 1;
+		}
+		return cnt;
+	}
+	// stack PRINT function
+	void Print() {
+		if (top == nullptr) {
+			cout << "NO STACK EXISTS " << endl;
+			return;
+		}
+		cout << "----STACK----" << endl;
+		Node* temp = bottom;
+		while (temp != top->next) {
+			cout << temp->value << " ";
+			temp = temp->next;
+		}
+		cout << endl;
+	}
+	// DESTRUCTOR
+	~stack() {
+		while (!isEmpty()) {
+			pop();
+		}
+	}
+};
+class Queue {
+	stack* stk;
+public:
+	Queue() {
+		stk = new stack();
+	}
+	void enqueue(int d) {
+		stk->push(d);
+	}
+	int dequeue() {
+		int res;
+		if (stk->isEmpty()) {
+			throw runtime_error("THERE IS NOTHING IN QUEUE");
+
+		}
+		else {
+			stack temp;
+			while (!stk->isEmpty()) {
+				temp.push(stk->Top());
+				stk->pop();
+			}
+			res = temp.Top();
+			temp.pop();
+			while (!temp.isEmpty()) {
+				stk->push(temp.Top());
+				temp.pop();
+			}
+		}
+		return res;
+	}
+
+};
+int main() {
+	Queue q1;
+	int choice, num;
+
+	do {
+
+		cout << "1. Enqueue " << endl;
+		cout << "2. Dequeue " << endl;
+		cout << "3. Exit " << endl;
+		cout << "Enter your choice: ";
+		cin >> choice;
+
+		switch (choice) {
+		case 1:
+			cout << "Enter number to enqueue: ";
+			cin >> num;
+			q1.enqueue(num);
+			break;
+		case 2:
+			try {
+				cout << q1.dequeue() << endl;
+			}
+			catch (const runtime_error& e) {
+				cout << e.what() << endl;
+			}
+			break;
+		case 3:
+			cout << "Exit " << endl;
+			break;
+		default:
+			cout << "Invalid choice. Please try again." << endl;
+		}
+
+	} while (choice != 3);
+
+
+}
