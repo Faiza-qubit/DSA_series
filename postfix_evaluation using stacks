@@ -1,45 +1,40 @@
-#include<iostream>
-#include<stack>
-#include<string>
+#include <iostream>
+#include <stack>
+#include <string>
 using namespace std;
 
 class Calculator {
 private:
     string infix;
     string postfix;
-    char delimeter;
+    char delimeter = '$';
 public:
     string infixToPostfix();
     int evaluatePostfix();
     void setInfix(string s);
 };
 
-// i have tried delimeter insertion in infix but time has overed so i couldn't complete it :)
-
 void Calculator::setInfix(string s) {
-    infix = ""; 
+    infix = "";
 
     for (int i = 0; i < s.size(); i++) {
         string operand;
         int ascii = (int)s[i];
 
         if (ascii >= 48 && ascii <= 57) {
-            
             while (i < s.size() && isdigit(s[i])) {
-                operand += s[i]; 
+                operand += s[i];
                 i++;
             }
-            infix += operand + '$'; 
-            i--; 
+            infix += operand + delimeter;
+            i--;
         }
         else {
-           
-            infix += s[i]; 
+            infix += s[i];
         }
     }
-    cout << infix << endl;
+    cout << "Infix with delimiters: " << infix << endl;
 }
-
 
 int precedence(char op) {
     if (op == '+' || op == '-') return 1;
@@ -48,36 +43,44 @@ int precedence(char op) {
 }
 
 string Calculator::infixToPostfix() {
-    stack<string> exp; 
-    stack<char> op;    
+    stack<string> exp;
+    stack<char> op;
 
-    for (int i = 0; i < infix.size();i++ ) {
-        
+    for (int i = 0; i < infix.size(); i++) {
         int asciiValue = (int)infix[i];
-        if (infix[i] == '$') {
-            string n(1, infix[i]);
-            exp.push(n);
+        if (infix[i] == delimeter) {
+            continue;
         }
         if (asciiValue >= 48 && asciiValue <= 57) {
-            // If it is an operand
             string n;
-            while (infix[i]!='$'&&isdigit(infix[i])) {
-                
+            while (i < infix.size() && infix[i] != delimeter) {
                 n += infix[i];
                 i++;
             }
-            i--;
-            
             exp.push(n);
         }
+        else if (infix[i] == '(') {
+            op.push(infix[i]);
+        }
+        else if (infix[i] == ')') {
+            while (!op.empty() && op.top() != '(') {
+                string v2 = exp.top();
+                exp.pop();
+                string v1 = exp.top();
+                exp.pop();
+                string n = v1 + " " + v2 + " " + op.top();
+                exp.push(n);
+                op.pop();
+            }
+            op.pop(); 
+        }
         else {
-            // If it is an operator
             while (!op.empty() && precedence(op.top()) >= precedence(infix[i])) {
                 string v2 = exp.top();
                 exp.pop();
                 string v1 = exp.top();
                 exp.pop();
-                string n = v1 + v2 + op.top();
+                string n = v1 + " " + v2 + " " + op.top();
                 exp.push(n);
                 op.pop();
             }
@@ -90,12 +93,11 @@ string Calculator::infixToPostfix() {
         exp.pop();
         string v1 = exp.top();
         exp.pop();
-        string n = v1 + v2 + op.top();
+        string n = v1 + " " + v2 + " " + op.top();
         exp.push(n);
         op.pop();
-       
     }
-    
+
     postfix = exp.top();
     return postfix;
 }
@@ -103,16 +105,15 @@ string Calculator::infixToPostfix() {
 int Calculator::evaluatePostfix() {
     stack<int> exp;
     for (int i = 0; i < postfix.size(); i++) {
-        if (postfix[i] == '$') { continue; }
+        if (postfix[i] == ' ') { continue; }
         int ascii = (int)postfix[i];
-        string n ;
+        string n;
         if (ascii >= 48 && ascii <= 57) {
-            while (postfix[i] != '$' && i<postfix.size()) {
+            while (i < postfix.size() && postfix[i] != ' ') {
                 n += postfix[i++];
             }
             int c = stoi(n);
             exp.push(c);
-            i--;
         }
         else {
             int v2 = exp.top();
@@ -134,32 +135,31 @@ int main() {
     string input;
 
     do {
-        cout << "1. infix to postfix conversion   " << endl;
-        cout << "2. evaluate postfix expression " << endl;
-        cout << "3.  exit " << endl;
+        cout << "1. infix to postfix conversion" << endl;
+        cout << "2. evaluate postfix expression" << endl;
+        cout << "3. exit" << endl;
         cin >> choice;
 
         switch (choice) {
         case 1:
-            cout << "Enter an infix expression: ";
+            cout << "Enter an infix expression (without spaces): ";
             cin >> input;
             c1.setInfix(input);
-            cout << "Converting infix to postfix"<< endl;
+            cout << "Converting infix to postfix..." << endl;
             cout << "Postfix expression: " << c1.infixToPostfix() << endl;
             break;
         case 2:
-            cout << "Evaluating postfix expression"<< endl;
+            cout << "Evaluating postfix expression..." << endl;
             cout << "Ans: " << c1.evaluatePostfix() << endl;
             break;
         case 3:
             cout << "BYE :)" << endl;
             break;
         default:
-            cout << "Invalid choice. Please try again."<< endl;
+            cout << "Invalid choice. Please try again." << endl;
         }
 
     } while (choice != 3);
 
-    
+    return 0;
 }
-
